@@ -23,7 +23,6 @@ const upload = multer({})
 
 
 router.post('/addRichText', async (req, res) => {
-  console.log('添加富文本-------', req.body);
   res.status(200).json({
     code: 1,
     msg: '添加成功'
@@ -48,7 +47,6 @@ router.post('/deleteArticle', async (req, res) => {
 })
 
 router.post('/addArticle', async (req, res) => {
-  console.log('添加文章-------', req.body);
   const {
     articleId
   } = req.body
@@ -75,7 +73,7 @@ router.post('/addArticle', async (req, res) => {
       }
     })
   } else {
-    new Article(req.body).save()
+    new Article({...req.body, uploadTime: Date.now()}).save()
     res.status(200).json({
       code: 1,
       msg: '添加文章成功'
@@ -92,6 +90,20 @@ router.get('/getAllArticle', async (req, res) => {
     .skip(parseInt(start))
     .limit(parseInt(count))
     .sort({'_id':-1});
+  res.status(200).json(result)
+})
+
+router.get('/getArticlesByKeywords', async (req, res) => {
+  const { keyWords, count, start } = req.query
+  let regexp=new RegExp(keyWords,'i')
+  var result = await Article.find({
+    $or: [
+      {articleTags: {$regex:regexp}},
+    ]
+  })
+  .skip(parseInt(start))
+  .limit(parseInt(count))
+  .sort({'_id':-1});
   res.status(200).json(result)
 })
 

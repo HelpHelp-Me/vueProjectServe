@@ -4,5 +4,6 @@ module.exports = mongoose.model('article',{
     articleIntroduction : String,
     articleCoverImage: String,
     articleContent: String,
-    articleTags: String
+    articleTags: String,
+    uploadTime: String,
 })
